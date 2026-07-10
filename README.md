@@ -1,66 +1,56 @@
-# Email da CT Junior - Projeto Piloto Back-End
+# 🛡️ API de E-mail Segura (Estudo de Validação por IP)
 
-Este projeto, consiste no desenvolvimento do back-end para a aplicação "Email da CT Junior". O objetivo é simular um sistema de e-mails.
-A API é responsável por gerenciar usuários, autenticação, envio, recebimento e visualização de e-mails.
+Este projeto é uma ramificação da API de "Email da CT Junior", criada como um ambiente prático para estudar **Segurança baseada em IP**, **Rate Limiting** e **Autenticação de Sessões**. 
 
-## Arquitetura e Conceitos
+A aplicação base simula um sistema de e-mails (com envio, recebimento e gestão de usuários), mas o foco deste repositório é entender como capturar, validar e utilizar o IP do cliente para proteger a infraestrutura do back-end contra acessos indevidos e ataques.
 
-- O projeto foi desenvolvido seguindo princípios de Domain-Driven Design (DDD) e Arquitetura Limpa, separando as responsabilidades em camadas distintas:
+## 🎯 Objetivo da Funcionalidade de IP
 
-  * core: Contém as peças fundamentais da arquitetura, como a classe Entity, o UniqueEntityID e o Either para tratamento de erros funcionais.
+A ideia central é criar uma camada extra de segurança onde um token de autenticação (JWT) esteja estritamente vinculado ao IP que originou o login. Caso o token seja roubado, ele não poderá ser utilizado a partir de uma rede diferente.
 
-  * domain: Representa o coração da aplicação.
+### 🚀 O que já foi implementado:
+- **Rate Limiting (Proteção contra Força Bruta):** Utilização do `@nestjs/throttler` configurado para permitir no máximo 100 requisições por minuto por IP.
+- **Identificação Real do Usuário (`CustomThrottlerGuard`):** Configuração do Express com `trust proxy: loopback` para garantir que a API leia o IP real do cliente, ignorando IPs de proxies internos ou load balancers.
+- **Sessão Vinculada (Entidade `Coockie`):** O IP do usuário agora é exigido no UseCase de autenticação. Após o login, a sessão armazena o `userIP` junto com o ID do usuário e o token de acesso.
 
-    *  enterprise/entities: Contém as entidades de domínio (User, Email) e os Value Objects (EmailWithSenderReceiverNames).
+### 🚧 Próximos Passos (To-Do)
+- [ ] Todas os use-cases que precisem de autenticação devem passar pela verificação do IP.
+- [ ] Implementar a verificação do IP (via Guards ou Interceptors) diretamente para os Controllers.
+- [ ] Criar um repositório no Prisma para a persistência das sessões (`Coockies`).
 
-    *  application/use-cases: Orquestra as regras de negócio, recebendo dados da camada de infraestrutura e utilizando os repositórios para persistência.
+---
 
-    *  application/repositories: Define os contratos (classes abstratas) para a persistência de dados, desacoplando o domínio dos detalhes de implementação do banco de dados.
+## 🏛️ Arquitetura e Conceitos
 
-  * infra: Camada responsável pelos detalhes de implementação.
+O projeto foi desenvolvido seguindo princípios de **Domain-Driven Design (DDD)** e **Arquitetura Limpa**, separando as responsabilidades em camadas distintas:
 
-      *  database: Contém a implementação dos repositórios usando Prisma e o banco de dados PostgreSQL.
+* **core:** Contém as peças fundamentais da arquitetura, como a classe `Entity`, o `UniqueEntityID` e o padrão `Either` para tratamento elegante de erros funcionais.
+* **domain:** Representa o coração da aplicação.
+  * **enterprise/entities:** Contém as entidades de domínio (`User`, `Email`, `Coockie`) e os Value Objects.
+  * **application/use-cases:** Orquestra as regras de negócio (ex: `AuthenticateUserUseCase`), recebendo dados da infraestrutura e utilizando os repositórios.
+  * **application/repositories:** Define os contratos (classes abstratas) para a persistência de dados, desacoplando o domínio do banco de dados.
+* **infra:** Camada responsável pelos detalhes de implementação.
+  * **database:** Implementação dos repositórios usando Prisma e PostgreSQL.
+  * **http:** Controllers (recebem requisições HTTP), Presenters (formatam respostas) e módulos do NestJS.
+  * **auth:** Gerencia a segurança, validação de tokens JWT e Guards de limitação de taxa (Throttler).
 
-      *  http: Contém os Controllers (responsáveis por receber requisições HTTP), os Presenters (responsáveis por formatar os dados de resposta) e os módulos do NestJS.
+## 🛠️ Tecnologias Utilizadas
 
-      *  auth: Gerencia a autenticação via JWT.
+- **NestJS:** Framework Node.js utilizando TypeScript, Injeção de Dependência e arquitetura modular.
+- **Prisma ORM & PostgreSQL:** Para modelagem tipada e persistência relacional.
+- **Docker:** Containerização do ambiente do banco de dados.
+- **Zod:** Validação rigorosa dos esquemas de dados recebidos nas requisições.
+- **Bcrypt:** Hashing seguro para as senhas de usuários.
+- **JWT (RS256) & Passport:** Autenticação baseada em tokens com criptografia assimétrica.
+- **Vitest:** Framework ultra-rápido para testes unitários (UseCases) e testes End-to-End (E2E).
 
-## Tecnologias Utilizadas
+## 🔑 Código para gerar as chaves JWT-RS256
 
-  - NestJS: Um framework Node.js progressivo para construir aplicações server-side eficientes e escaláveis. Ele utiliza TypeScript por padrão e implementa conceitos de design de software como Injeção de Dependência, tornando o código modular e fácil de testar.
+Para rodar o projeto localmente, gere as chaves pública e privada usando OpenSSL:
 
-  - Prisma e Prisma Client: Um ORM (Object-Relational Mapper) de nova geração que simplifica o acesso e manipulação do banco de dados, oferecendo tipagem forte.
+```bash
+openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+base64 -w 0 private_key.pem > private_key_b64.txt
 
-  - PostgreSQL: Um sistema de gerenciamento de banco de dados relacional, utilizado para a persistência de todos os dados da aplicação.
-
-  - Docker: Utilizado para containerizar o ambiente do banco de dados PostgreSQL.
-
-  - Zod: Uma biblioteca de declaração e validação de esquemas com foco em TypeScript. É usada para garantir a integridade e o formato correto dos dados recebidos.
-
-  - Bcrypt: Empregado para o hashing seguro de senhas. Antes de salvar a senha de um usuário no banco de dados.
-
-  - NestJS JWT e Passport: Módulos do NestJS que facilitam a implementação de autenticação baseada em JSON Web Tokens (JWT). O sistema utiliza um par de chaves assimétricas (RS256) para assinar e verificar os tokens, garantindo que apenas usuários autenticados possam acessar as rotas protegidas.
-
-  - Vitest: Um framework de testes unitários e de integração extremamente rápido. Foi utilizado para criar testes unitários para os UseCases e testes End-to-End (E2E) para os Controllers.
-
-## Código para gerar as chaves JWT-RS256
-- openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
-- base64 -w 0 private_key.pem > private_key_b64.txt
-
-- openssl rsa -pubout -in private_key.pem -out public_key.pem
-- base64 -w 0 public_key.pem > public_key_b64.txt
-
-## API Endpoints
-
- ### Abaixo estão os principais endpoints disponíveis na API. Rotas marcadas como Autenticada exigem um token JWT no cabeçalho Authorization: Bearer <token>.
-  |Endpoint	      | Método  |Descrição	                                                          |Autenticação
-  | --------------|---------|---------------------------------------------------------------------|------------------
-  | /user	        |POST	    |Cria um novo usuário.	                                              |Pública
-  | /login	      |POST	    |Autentica um usuário e retorna um access_token.	                    |Pública
-  | /my-emails	  |GET	    |Retorna a lista de e-mails recebidos pelo usuário autenticado.	      |Autenticada
-  | /sent-emails  |GET	    |Retorna a lista de e-mails enviados pelo usuário autenticado.	      |Autenticada
-  | /email	      |POST	    |Envia um novo e-mail para um destinatário.	                          |Autenticada
-  | /email/:id	  |GET	    |Busca os detalhes de um e-mail específico pelo seu ID.	              |Autenticada
-  | /email/:id	  |DELETE	  |Deleta um e-mail enviado, caso ainda não tenha sido lido.	          |Autenticada
-  | /my-name	    |PATCH	  |Edita o nome do usuário autenticado.	                                |Autenticada
-  | /my-image	    |PATCH	  |Edita a imagem de perfil do usuário autenticado.	                    |Autenticada
+openssl rsa -pubout -in private_key.pem -out public_key.pem
+base64 -w 0 public_key.pem > public_key_b64.txt
