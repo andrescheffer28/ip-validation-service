@@ -1,0 +1,82 @@
+@baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
+
+# @name create_account
+POST {{baseUrl}}/user
+Content-Type: application/json
+
+{
+  "name":"Fernando Pessoa",
+  "email": "fernandopessoa@gmail.com",
+  "password": "123456"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "fernandopessoa@gmail.com",
+  "password": "123456"
+}
+
+###
+
+# @name update_profile_image
+PATCH   {{baseUrl}}/my-image
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "profileImage": "nova foto 2.0"
+}
+
+###
+
+# @name update_user_name
+PATCH {{baseUrl}}/my-name
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "userName": "Andre Costa"
+}
+
+###
+
+# @name send_email
+POST {{baseUrl}}/email
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "email3",
+  "content": "email3",
+  "emailDeDestinatario": "anddrecosttascheffer@gmail.com"
+}
+
+###
+
+# @name delete_email
+DELETE  {{baseUrl}}/email/ae088d55-c734-4112-9715-ba20c852632a
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name fetch_recent_received_emails
+GET  {{baseUrl}}/my-emails
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name fetch_recent_sended_emails
+GET  {{baseUrl}}/sent-emails
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_emails_by_id
+GET  {{baseUrl}}/email/d16cd520-c5b1-425a-949e-a48464191cde
+Authorization: Bearer {{authToken}}
