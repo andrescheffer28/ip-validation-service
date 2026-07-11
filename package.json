@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "nest build",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
