@@ -29,9 +29,10 @@ X-Forwarded-For: 2804:56c:a46c:a600:281e:8b6a:1603:b975
 PATCH   {{baseUrl}}/my-image
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+X-Forwarded-For: 2804:56c:a46c:a600:281e:8b6a:1603:b975
 
 {
-  "profileImage": "nova foto 2.0"
+  "profileImage": "nova foto 3.0"
 }
 
 ###

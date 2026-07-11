@@ -6,10 +6,16 @@ import { JwtStrategy } from "./jwt.strategy";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { Env } from "../env/env";
+import { IPValidatorGuard } from "./ip-validator.guard";
+import { IPValidatorUseCase } from "@/domain/application/use-cases/ip-validator/ip-validator";
+import { DataBaseModule } from "../database/database.module";
+import { GeolocationModule } from "../geolocation-gateway/geolocation.module";
 
 @Module({
   imports: [
     PassportModule,
+    DataBaseModule,
+    GeolocationModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       global: true,
@@ -29,9 +35,14 @@ import { Env } from "../env/env";
   ],
   providers: [
     JwtStrategy,
+    IPValidatorUseCase,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: IPValidatorGuard
     }
   ]
 })
