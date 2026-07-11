@@ -3,8 +3,8 @@ import 'dotenv/config'
 import { PrismaClient } from "@prisma/client";
 import { randomUUID } from 'node:crypto';
 import { execSync } from 'node:child_process';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 const schemaId = randomUUID()
 
@@ -28,11 +28,12 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  const pool = new Pool({ connectionString: databaseURL })
 
-  const prisma = new PrismaClient({
-    adapter: new PrismaPg(pool, { schema: schemaId }) 
-  })
+  const pool = new Pool({ connectionString: databaseURL })
+  const adapter = new PrismaPg(pool, { schema: schemaId })
+  
+  // Passamos o adapter para o PrismaClient, resolvendo o erro de validação!
+  const prisma = new PrismaClient({ adapter })
 
   await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`)
   await prisma.$disconnect()
