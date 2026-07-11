@@ -4,6 +4,8 @@ import { PrismaUsersRepository } from "./prisma/repositories/prisma-users-reposi
 import { PrismaEmailsRepository } from "./prisma/repositories/prisma-emails-repository";
 import { UsersRepository } from "@/domain/application/repositories/users-repository";
 import { EmailsRepository } from "@/domain/application/repositories/emails-repository";
+import { CookiesRepository } from "@/domain/application/repositories/cookies-repostiory";
+import { PrismaCookiesRepository } from "./prisma/repositories/prisma-coockies-repository";
 
 @Module({
   providers: [
@@ -16,11 +18,16 @@ import { EmailsRepository } from "@/domain/application/repositories/emails-repos
       provide: EmailsRepository,
       useClass: PrismaEmailsRepository,
     },
+    {
+      provide: CookiesRepository,
+      useClass: PrismaCookiesRepository,
+    }
   ],
   exports: [
     PrismaService,
     UsersRepository,
     EmailsRepository,
+    CookiesRepository,
   ],
 })
 export class DataBaseModule { }

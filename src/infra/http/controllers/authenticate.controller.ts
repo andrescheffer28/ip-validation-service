@@ -27,10 +27,17 @@ export class AuthenticateController {
   ) {
 
     const userIp = req.ip
+    
+    if(!userIp){
+      throw new BadRequestException()
+    }
+    
     const { email, password } = body
+    
     const result = await this.authenticateUser.execute({
       email,
       password,
+      userIP: userIp
     })
 
     if (result.isLeft()) {

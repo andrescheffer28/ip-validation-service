@@ -23,6 +23,7 @@
     "test:e2e": "vitest run --config ./vite.config.e2e.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -34,10 +35,12 @@
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.0.0",
     "argon2": "^0.44.0",
+    "axios": "^1.18.1",
     "cpf-cnpj-validator": "^2.1.2",
     "currency.js": "^2.0.4",
     "dayjs": "^1.11.21",
     "libphonenumber-js": "^1.13.6",
+    "node-iplocate": "^2.0.1",
     "passport-jwt": "^4.0.1",
     "pg": "^8.21.0",
     "reflect-metadata": "^0.2.2",

@@ -1,20 +1,20 @@
-import { InMemoryCoockiesRepository } from "test/repositories/in-memory-coockies-repository";
+import { InMemoryCookiesRepository } from "test/repositories/in-memory-cookies-repository";
 import { IPValidatorUseCase } from "./ip-validator";
 import { FakeGeolocationGateway } from "test/geolocation/fake-geolocation-gateway";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { createFakeIp } from "test/factories/make-ip";
-import { Coockie } from "@/domain/enterprise/entities/cookie";
+import { Cookie } from "@/domain/enterprise/entities/cookie";
 
-let inMemoryCoockiesRepository: InMemoryCoockiesRepository
+let inMemoryCookiesRepository: InMemoryCookiesRepository
 let fakeGeolocationGateway: FakeGeolocationGateway
 let sut: IPValidatorUseCase
 
 describe('Validate userIP', () => {
   beforeEach(() => {
-    inMemoryCoockiesRepository = new InMemoryCoockiesRepository()
+    inMemoryCookiesRepository = new InMemoryCookiesRepository()
     fakeGeolocationGateway = new FakeGeolocationGateway()
     sut = new IPValidatorUseCase(
-      inMemoryCoockiesRepository,
+      inMemoryCookiesRepository,
       fakeGeolocationGateway
     )
   })
@@ -28,17 +28,16 @@ describe('Validate userIP', () => {
     expect(fakeGeolocation).toBeTruthy()
 
     if(fakeGeolocation){
-      const existingCoockie = Coockie.create(
+      const existingCookie = Cookie.create(
         {
           userID,
           userIP: fakeStoredIP,
-          token: 'fake-access-token',
           city: fakeGeolocation.city,
           country: fakeGeolocation.country,
         }
       )
 
-      await inMemoryCoockiesRepository.create(existingCoockie)
+      await inMemoryCookiesRepository.create(existingCookie)
     }
 
     const result = await sut.execute({
@@ -63,16 +62,15 @@ describe('Validate userIP', () => {
     expect(fakeGeolocation).toBeTruthy()
 
     if(fakeGeolocation){
-      const existingCoockie = Coockie.create(
+      const existingCookie = Cookie.create(
         {
           userID,
           userIP: fakeStoredIP,
-          token: 'fake-access-token',
           city: fakeGeolocation.city,
           country: fakeGeolocation.country,
         }
       )
-      await inMemoryCoockiesRepository.create(existingCoockie)
+      await inMemoryCookiesRepository.create(existingCookie)
     }
 
     const result = await sut.execute({

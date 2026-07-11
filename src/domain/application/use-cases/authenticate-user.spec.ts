@@ -4,14 +4,14 @@ import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { AuthenticateUserUseCase } from './authenticate-user'
 import { makeUser } from 'test/factories/make-user'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
-import { InMemoryCoockiesRepository } from 'test/repositories/in-memory-coockies-repository'
+import { InMemoryCookiesRepository } from 'test/repositories/in-memory-cookies-repository'
 import { createFakeIp } from 'test/factories/make-ip'
 import { FakeGeolocationGateway } from 'test/geolocation/fake-geolocation-gateway'
 import { GeolocationGateway } from '../providers/geolocation-gateway'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeGeolocationGateway: FakeGeolocationGateway
-let inMemoryCoockiesRepository:  InMemoryCoockiesRepository
+let inMemoryCookiesRepository:  InMemoryCookiesRepository
 let fakeHasher: FakeHasher
 let encrypter: FakeEncrypter
 
@@ -21,14 +21,14 @@ describe('Authenticate User', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     fakeGeolocationGateway = new FakeGeolocationGateway()
-    inMemoryCoockiesRepository = new  InMemoryCoockiesRepository()
+    inMemoryCookiesRepository = new  InMemoryCookiesRepository()
     fakeHasher = new FakeHasher()
     encrypter = new FakeEncrypter()
 
     sut = new AuthenticateUserUseCase(
       inMemoryUsersRepository,
       fakeGeolocationGateway,
-      inMemoryCoockiesRepository,
+      inMemoryCookiesRepository,
       fakeHasher,
       encrypter
     )
@@ -55,8 +55,8 @@ describe('Authenticate User', () => {
       accessToken: expect.any(String),
     })
 
-    expect(inMemoryCoockiesRepository.items).toHaveLength(1)
-    expect(inMemoryCoockiesRepository.items[0].userID).toBe(user.id)
+    expect(inMemoryCookiesRepository.items).toHaveLength(1)
+    expect(inMemoryCookiesRepository.items[0].userID).toBe(user.id)
   })
 
   it('should not be able to authenticate with a wrong password', async () => {
@@ -75,7 +75,7 @@ describe('Authenticate User', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
-    expect(inMemoryCoockiesRepository.items).length(0)
+    expect(inMemoryCookiesRepository.items).length(0)
   })
 
   it('should not be able to authenticate with a non-existing email', async () => {
@@ -87,6 +87,6 @@ describe('Authenticate User', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
-    expect(inMemoryCoockiesRepository.items).toHaveLength(0)
+    expect(inMemoryCookiesRepository.items).toHaveLength(0)
   })
 })

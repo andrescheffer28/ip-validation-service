@@ -20,11 +20,13 @@ import { FetchRecentSendedEmailsUseCase } from "@/domain/application/use-cases/f
 import { FetchEmailByIdController } from "./controllers/fetch-email-by-id.controller";
 import { FetchEmailByIdUseCase } from "@/domain/application/use-cases/fetch-email-by-id";
 import { FetchEmailDetailsByIdUseCase } from "@/domain/application/use-cases/fetch-email-details-by-id";
+import { GeolocationModule } from "../geolocation-gateway/geolocation.module";
 
 @Module({
   imports: [
     DataBaseModule,
     CryptographyModule,
+    GeolocationModule
   ],
   controllers: [
     CreateAccountController,

@@ -1,6 +1,6 @@
 import { Either, left, right } from "@/core/either"
 import { Injectable } from "@nestjs/common"
-import { CoockiesRepository } from "../../repositories/cookies-repostiory"
+import { CookiesRepository } from "../../repositories/cookies-repostiory"
 import { ResourceNotFoundError } from "../errors/resource-not-found-error"
 import { GeolocationData, GeolocationGateway } from "../../providers/geolocation-gateway"
 
@@ -21,7 +21,7 @@ type IPValidatorUseCaseResponse = Either<
 @Injectable()
 export class IPValidatorUseCase {
   constructor(
-    private coockiesRepository: CoockiesRepository,
+    private cookiesRepository: CookiesRepository,
     private geolocationGateway: GeolocationGateway
   ) { }
   
@@ -29,13 +29,13 @@ export class IPValidatorUseCase {
     userID,
     currentUserIP
   }: IPValidatorUseCaseRequest): Promise<IPValidatorUseCaseResponse> {
-    const coockies = await this.coockiesRepository.findByUserID(userID)
+    const cookies = await this.cookiesRepository.findByUserID(userID)
 
-    if(!coockies || coockies.length === 0){
+    if(!cookies || cookies.length === 0){
       return left(new ResourceNotFoundError())
     }
 
-    const activeCookie = coockies.reduce((mostRecent, current) => {
+    const activeCookie = cookies.reduce((mostRecent, current) => {
       return current.createdAt.getTime() > mostRecent.createdAt.getTime()
       ? current
       : mostRecent

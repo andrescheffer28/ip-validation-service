@@ -2,26 +2,21 @@ import { Entity } from "@/core/entities/entity"
 import { Optional } from "@/core/entities/types/optional"
 import { UniqueEntityID } from "@/core/entities/unique-entity-id"
 
-export interface CoockieProps {
+export interface CookieProps {
   userIP: string
   userID: UniqueEntityID
-  token: string
   createdAt: Date
   country: string | null
   city: string | null
 }
 
-export class Coockie extends Entity<CoockieProps> {
+export class Cookie extends Entity<CookieProps> {
   get userIP(){
     return this.props.userIP
   }
 
   get userID(){
     return this.props.userID
-  }
-
-  get token(){
-    return this.props.token
   }
 
   get createdAt() {
@@ -49,16 +44,16 @@ export class Coockie extends Entity<CoockieProps> {
   }
 
   static create(
-    props: Optional<CoockieProps, 'createdAt'>,
+    props: Optional<CookieProps, 'createdAt'>,
     id?: UniqueEntityID
   ) {
-    const coockie = new Coockie(
+    const cookie = new Cookie(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
       },
       id
     )
-    return coockie
+    return cookie
   }
 }

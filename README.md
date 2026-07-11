@@ -11,7 +11,7 @@ A ideia central é criar uma camada extra de segurança onde um token de autenti
 ### 🚀 O que já foi implementado:
 - **Rate Limiting (Proteção contra Força Bruta):** Utilização do `@nestjs/throttler` configurado para permitir no máximo 100 requisições por minuto por IP.
 - **Identificação Real do Usuário (`CustomThrottlerGuard`):** Configuração do Express com `trust proxy: loopback` para garantir que a API leia o IP real do cliente, ignorando IPs de proxies internos ou load balancers.
-- **Sessão Vinculada (Entidade `Coockie`):** O IP do usuário agora é exigido no UseCase de autenticação. Após o login, a sessão armazena o `userIP` junto com o ID do usuário e o token de acesso.
+- **Sessão Vinculada (Entidade `Cookie`):** O IP do usuário agora é exigido no UseCase de autenticação. Após o login, a sessão armazena o `userIP` junto com o ID do usuário e o token de acesso.
 ---
 
 ## 🏛️ Arquitetura e Conceitos
@@ -20,7 +20,7 @@ O projeto foi desenvolvido seguindo princípios de **Domain-Driven Design (DDD)*
 
 * **core:** Contém as peças fundamentais da arquitetura, como a classe `Entity`, o `UniqueEntityID` e o padrão `Either` para tratamento elegante de erros funcionais.
 * **domain:** Representa o coração da aplicação.
-  * **enterprise/entities:** Contém as entidades de domínio (`User`, `Email`, `Coockie`) e os Value Objects.
+  * **enterprise/entities:** Contém as entidades de domínio (`User`, `Email`, `Cookie`) e os Value Objects.
   * **application/use-cases:** Orquestra as regras de negócio (ex: `AuthenticateUserUseCase`), recebendo dados da infraestrutura e utilizando os repositórios.
   * **application/repositories:** Define os contratos (classes abstratas) para a persistência de dados, desacoplando o domínio do banco de dados.
 * **infra:** Camada responsável pelos detalhes de implementação.

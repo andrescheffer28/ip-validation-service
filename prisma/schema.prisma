@@ -23,6 +23,8 @@ model User {
   sentEmails     Email[] @relation("SentEmails")
   receivedEmails Email[] @relation("ReceivedEmails")
 
+  userCookie Cookie[] @relation("UserCookies")
+
   @@map("users")
 }
 
@@ -39,4 +41,17 @@ model Email {
   receiver User @relation("ReceivedEmails", fields: [receiverId], references: [id])
 
   @@map("emails")
+}
+
+model Cookie {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  createdAt DateTime  @map("created_at")
+  userIP    String    @map("user_ip")
+  country   String?  
+  city      String?
+
+  userCookie User @relation("UserCookies", fields: [userId], references: [id])
+
+  @@map("cookies")
 }

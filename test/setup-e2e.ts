@@ -27,8 +27,6 @@ beforeAll(async () => {
   execSync('npx prisma migrate deploy')
 })
 
-console.log('TEST DATABASE_URL:', databaseURL)
-
 afterAll(async () => {
   const pool = new Pool({ connectionString: databaseURL })
 

@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { ConfigService } from '@nestjs/config';
-import { Env } from '@/infra/env';
+import { Env } from '@/infra/env/env';
 
 @Injectable()
 export class PrismaService
@@ -21,8 +21,6 @@ export class PrismaService
     const pool = new Pool({ connectionString: databaseurl });
 
     const adapter = new PrismaPg(pool, { schema });
-
-    console.log('DATABASE_URL:', databaseurl)
 
     super({
       adapter,

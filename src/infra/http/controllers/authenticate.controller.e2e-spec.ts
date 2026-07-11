@@ -5,6 +5,7 @@ import { Test } from "@nestjs/testing"
 import { hash } from "argon2"
 import { UserFactory } from "test/factories/make-user"
 import request from 'supertest'
+import { createFakeIp } from "test/factories/make-ip"
 
 describe('Authenticate (E2E', () => {
   let app: INestApplication
@@ -29,7 +30,10 @@ describe('Authenticate (E2E', () => {
       password: await hash('123456'),
     })
 
-    const response = await request(app.getHttpServer()).post('/login').send({
+    const response = await request(app.getHttpServer())
+    .post('/login')
+    .set('X-Forwarded-For', createFakeIp('v4'))
+    .send({
       email: 'fernandopessoa@exemple.com',
       password: '123456',
     })

@@ -4,8 +4,8 @@ import { UsersRepository } from '../repositories/users-repository'
 import { HashComparer } from '../cryptography/hash-comparer'
 import { Encrypter } from '../cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
-import { CoockiesRepository } from '../repositories/cookies-repostiory'
-import { Coockie } from '@/domain/enterprise/entities/cookie'
+import { CookiesRepository } from '../repositories/cookies-repostiory'
+import { Cookie } from '@/domain/enterprise/entities/cookie'
 import { GeolocationGateway } from '../providers/geolocation-gateway'
 
 interface AuthenticateUserUseCaseRequest {
@@ -26,7 +26,7 @@ export class AuthenticateUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private geolocationGatewayey: GeolocationGateway,
-    private coockiesRepository: CoockiesRepository,
+    private cookiesRepository: CookiesRepository,
     private hashComparer: HashComparer,
     private encrypter: Encrypter
   ) { }
@@ -58,15 +58,14 @@ export class AuthenticateUserUseCase {
       sub: user.id.toString(),
     })
 
-    const coockie = Coockie.create({
+    const cookie = Cookie.create({
       userID: user.id,
       userIP: userIP,
-      token: accessToken,
       country: location? location.country : null,
       city: location? location.city : null,
     })
 
-    await this.coockiesRepository.create(coockie)
+    await this.cookiesRepository.create(cookie)
 
     return right({
       accessToken,

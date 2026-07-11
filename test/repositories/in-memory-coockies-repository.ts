@@ -1,25 +1,25 @@
-import { CoockiesRepository } from "@/domain/application/repositories/cookies-repostiory";
-import { Coockie } from "@/domain/enterprise/entities/cookie";
+import { CookiesRepository } from "@/domain/application/repositories/cookies-repostiory";
+import { Cookie } from "@/domain/enterprise/entities/cookie";
 
-export class InMemoryCoockiesRepository implements CoockiesRepository {
-  public items: Coockie[] = []
+export class InMemoryCookiesRepository implements CookiesRepository {
+  public items: Cookie[] = []
 
-  async findByUserID(id: string): Promise<Coockie[] | null> {
-    const coockie = this.items.filter(item => item.userID.toString() == id)
+  async findByUserID(id: string): Promise<Cookie[] | null> {
+    const cookie = this.items.filter(item => item.userID.toString() == id)
 
-    if(!coockie){
+    if(!cookie){
       return null
     }
 
-    return coockie
+    return cookie
   }
 
-  async create(coockie: Coockie): Promise<void> {
-    this.items.push(coockie)
+  async create(cookie: Cookie): Promise<void> {
+    this.items.push(cookie)
   }
 
-  async delete(coockie: Coockie): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.id.toString() === coockie.id.toString())
+  async delete(cookie: Cookie): Promise<void> {
+    const itemIndex = this.items.findIndex((item) => item.id.toString() === cookie.id.toString())
     this.items.splice(itemIndex, 1)
   }
   
