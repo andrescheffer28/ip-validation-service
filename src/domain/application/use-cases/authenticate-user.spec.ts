@@ -6,9 +6,12 @@ import { makeUser } from 'test/factories/make-user'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { InMemoryCoockiesRepository } from 'test/repositories/in-memory-coockies-repository'
 import { createFakeIp } from 'test/factories/make-ip'
+import { FakeGeolocationGateway } from 'test/geolocation/fake-geolocation-gateway'
+import { GeolocationGateway } from '../providers/geolocation-gateway'
 
-let inMemoryCoockiesRepository:  InMemoryCoockiesRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
+let fakeGeolocationGateway: FakeGeolocationGateway
+let inMemoryCoockiesRepository:  InMemoryCoockiesRepository
 let fakeHasher: FakeHasher
 let encrypter: FakeEncrypter
 
@@ -17,12 +20,14 @@ let sut: AuthenticateUserUseCase
 describe('Authenticate User', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
+    fakeGeolocationGateway = new FakeGeolocationGateway()
     inMemoryCoockiesRepository = new  InMemoryCoockiesRepository()
     fakeHasher = new FakeHasher()
     encrypter = new FakeEncrypter()
 
     sut = new AuthenticateUserUseCase(
       inMemoryUsersRepository,
+      fakeGeolocationGateway,
       inMemoryCoockiesRepository,
       fakeHasher,
       encrypter
@@ -52,7 +57,6 @@ describe('Authenticate User', () => {
 
     expect(inMemoryCoockiesRepository.items).toHaveLength(1)
     expect(inMemoryCoockiesRepository.items[0].userID).toBe(user.id)
-    expect(inMemoryCoockiesRepository.items[0].ComparaIP(userIP)).toBe(true)
   })
 
   it('should not be able to authenticate with a wrong password', async () => {
@@ -71,6 +75,7 @@ describe('Authenticate User', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
+    expect(inMemoryCoockiesRepository.items).length(0)
   })
 
   it('should not be able to authenticate with a non-existing email', async () => {

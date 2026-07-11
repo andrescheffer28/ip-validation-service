@@ -6,6 +6,7 @@ import { Encrypter } from '../cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
 import { CoockiesRepository } from '../repositories/cookies-repostiory'
 import { Coockie } from '@/domain/enterprise/entities/cookie'
+import { GeolocationGateway } from '../providers/geolocation-gateway'
 
 interface AuthenticateUserUseCaseRequest {
   email: string
@@ -24,6 +25,7 @@ type AuthenticateUserUseCaseResponse = Either<
 export class AuthenticateUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
+    private geolocationGatewayey: GeolocationGateway,
     private coockiesRepository: CoockiesRepository,
     private hashComparer: HashComparer,
     private encrypter: Encrypter
@@ -49,6 +51,8 @@ export class AuthenticateUserUseCase {
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
+
+    const location = await this.geolocationGatewayey.locate(userIP)
     
     const accessToken = await this.encrypter.encrypt({
       sub: user.id.toString(),
@@ -56,8 +60,10 @@ export class AuthenticateUserUseCase {
 
     const coockie = Coockie.create({
       userID: user.id,
-      _userIP: userIP,
+      userIP: userIP,
       token: accessToken,
+      country: location? location.country : null,
+      city: location? location.city : null,
     })
 
     await this.coockiesRepository.create(coockie)

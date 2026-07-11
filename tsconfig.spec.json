@@ -10,6 +10,7 @@
     "src/**/*.e2e-spec.ts",
     "test/repositories/**/*.ts",
     "test/factories/**/*.ts",
+    "test/geolocation/**/*.ts",
     "test/cryptography/**/*.ts",
     "test/setup-e2e.ts"
   ],

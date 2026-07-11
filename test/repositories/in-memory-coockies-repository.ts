@@ -4,7 +4,7 @@ import { Coockie } from "@/domain/enterprise/entities/cookie";
 export class InMemoryCoockiesRepository implements CoockiesRepository {
   public items: Coockie[] = []
 
-  async findById(id: string): Promise<Coockie[] | null> {
+  async findByUserID(id: string): Promise<Coockie[] | null> {
     const coockie = this.items.filter(item => item.userID.toString() == id)
 
     if(!coockie){

@@ -3,13 +3,19 @@ import { Optional } from "@/core/entities/types/optional"
 import { UniqueEntityID } from "@/core/entities/unique-entity-id"
 
 export interface CoockieProps {
-  _userIP: string
+  userIP: string
   userID: UniqueEntityID
   token: string
   createdAt: Date
+  country: string | null
+  city: string | null
 }
 
 export class Coockie extends Entity<CoockieProps> {
+  get userIP(){
+    return this.props.userIP
+  }
+
   get userID(){
     return this.props.userID
   }
@@ -22,8 +28,24 @@ export class Coockie extends Entity<CoockieProps> {
     return this.props.createdAt
   }
 
-  ComparaIP(userIp: string): Boolean{
-    return (this.props._userIP === userIp)
+  get country(){
+    return this.props.country
+  }
+
+  get city(){
+    return this.props.city
+  }
+
+  isSameIP(currentUserIP: string): boolean{
+    return this.props.userIP === currentUserIP
+  }
+
+  isLocationValid(currentCountry: string | null, currentCity: string | null): boolean{
+    
+    const isSameCountry = this.props.country === currentCountry
+    const isSameCity = this.props.city === currentCity
+
+    return isSameCountry && isSameCity
   }
 
   static create(
