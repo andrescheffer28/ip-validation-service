@@ -18,7 +18,13 @@ export class PrismaService
     const url = new URL(databaseurl)
     const schema = url.searchParams.get('schema') || 'public'
 
-    const pool = new Pool({ connectionString: databaseurl });
+    const pool = new Pool({
+      host: url.hostname,
+      port: url.port ? parseInt(url.port) : 5432,
+      user: url.username,
+      password: decodeURIComponent(url.password),
+      database: url.pathname.substring(1),
+    });
 
     const adapter = new PrismaPg(pool, { schema });
 
