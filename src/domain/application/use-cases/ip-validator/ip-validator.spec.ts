@@ -1,9 +1,9 @@
-import { InMemoryCookiesRepository } from "test/repositories/in-memory-cookies-repository";
 import { IPValidatorUseCase } from "./ip-validator";
 import { FakeGeolocationGateway } from "test/geolocation/fake-geolocation-gateway";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { createFakeIp } from "test/factories/make-ip";
 import { Cookie } from "@/domain/enterprise/entities/cookie";
+import { InMemoryCookiesRepository } from "test/repositories/in-memory-coockies-repository";
 
 let inMemoryCookiesRepository: InMemoryCookiesRepository
 let fakeGeolocationGateway: FakeGeolocationGateway

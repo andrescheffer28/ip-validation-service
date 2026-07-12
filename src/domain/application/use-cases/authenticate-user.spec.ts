@@ -4,10 +4,9 @@ import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { AuthenticateUserUseCase } from './authenticate-user'
 import { makeUser } from 'test/factories/make-user'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
-import { InMemoryCookiesRepository } from 'test/repositories/in-memory-cookies-repository'
 import { createFakeIp } from 'test/factories/make-ip'
 import { FakeGeolocationGateway } from 'test/geolocation/fake-geolocation-gateway'
-import { GeolocationGateway } from '../providers/geolocation-gateway'
+import { InMemoryCookiesRepository } from 'test/repositories/in-memory-coockies-repository'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeGeolocationGateway: FakeGeolocationGateway

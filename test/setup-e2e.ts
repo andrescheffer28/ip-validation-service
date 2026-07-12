@@ -32,7 +32,6 @@ afterAll(async () => {
   const pool = new Pool({ connectionString: databaseURL })
   const adapter = new PrismaPg(pool, { schema: schemaId })
   
-  // Passamos o adapter para o PrismaClient, resolvendo o erro de validação!
   const prisma = new PrismaClient({ adapter })
 
   await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`)

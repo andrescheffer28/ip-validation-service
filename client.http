@@ -1,8 +1,8 @@
-@baseUrl = https://ip-validation-service-production.up.railway.app/
+@baseUrl = https://ip-validation-service-production.up.railway.app
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name create_account
-POST {{baseUrl}}user
+POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
